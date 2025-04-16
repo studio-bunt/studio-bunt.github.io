@@ -83,4 +83,161 @@ document.addEventListener('DOMContentLoaded', () => {
         
         document.addEventListener('mouseover', () => {
             cursor.style.display = 'block';
-            cursorFollower.style
+            cursorFollower.style.display = 'block';
+        });
+    }
+    
+    // Header scroll effect
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
+    
+    // Smooth scrolling
+    scrollLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const targetId = link.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                const topOffset = targetElement.getBoundingClientRect().top + window.scrollY;
+                const headerHeight = header.offsetHeight;
+                
+                window.scrollTo({
+                    top: topOffset - headerHeight,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Animate elements on scroll
+    const animateOnScroll = () => {
+        const elements = document.querySelectorAll('.gallery-grid > div, .news-item, .about-content p, .section-title');
+        
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+            
+            if (elementPosition < windowHeight - 100) {
+                element.classList.add('fade-in');
+            }
+        });
+    };
+    
+    // Add CSS class for animation
+    const style = document.createElement('style');
+    style.textContent = `
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes navLinkFade {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .toggle .line1 {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .toggle .line2 {
+            opacity: 0;
+        }
+        
+        .toggle .line3 {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize scroll animation
+    window.addEventListener('scroll', animateOnScroll);
+    animateOnScroll(); // Run once on page load
+    
+    // Form submission handling
+    const contactForm = document.querySelector('.contact-form');
+    const newsletterForm = document.querySelector('.newsletter-form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Here you would normally send the form data to your server
+            // For now, we'll just show a success message
+            const formElements = contactForm.elements;
+            const formData = {};
+            
+            for (let i = 0; i < formElements.length; i++) {
+                const element = formElements[i];
+                if (element.name) {
+                    formData[element.name] = element.value;
+                }
+            }
+            
+            // Reset the form
+            contactForm.reset();
+            
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+            successMessage.style.color = '#28a745';
+            successMessage.style.marginTop = '1rem';
+            successMessage.style.fontWeight = 'bold';
+            
+            contactForm.appendChild(successMessage);
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                successMessage.remove();
+            }, 5000);
+        });
+    }
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Similar to contact form
+            newsletterForm.reset();
+            
+            const successMessage = document.createElement('div');
+            successMessage.className = 'success-message';
+            successMessage.textContent = 'Thank you for subscribing to our newsletter!';
+            successMessage.style.color = 'white';
+            successMessage.style.marginTop = '1rem';
+            successMessage.style.fontWeight = 'bold';
+            
+            newsletterForm.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.remove();
+            }, 5000);
+        });
+    }
+});
