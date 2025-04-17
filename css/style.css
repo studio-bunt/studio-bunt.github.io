@@ -8,8 +8,8 @@
     --success-color: #28a745;
     --error-color: #dc3545;
     --transition: all 0.3s ease;
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Montserrat', sans-serif;
+    --font-heading: 'Helvetica', serif;
+    --font-body: 'JetBrains Mono', sans-serif;
 }
 
 * {
