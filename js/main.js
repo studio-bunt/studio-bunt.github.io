@@ -169,3 +169,53 @@
     openFromHash();
     window.addEventListener('hashchange', openFromHash);
 })();
+
+/* Collect page: thumbnails switch the main image (or play the video); the main image opens large on click. */
+(function () {
+    document.querySelectorAll('.piece').forEach(piece => {
+        const main = piece.querySelector('.piece-frame img.main');
+        const video = piece.querySelector('.piece-frame video.main-video');
+        if (!main) return;
+        const thumbs = piece.querySelectorAll('.thumbs .t');
+        thumbs.forEach(t => {
+            const show = () => {
+                thumbs.forEach(o => o.classList.toggle('on', o === t));
+                if (t.dataset.video && video) {
+                    if (!video.getAttribute('src')) video.src = t.dataset.video;
+                    main.hidden = true; video.hidden = false;
+                    video.play().catch(() => {});
+                    return;
+                }
+                if (video) { video.pause(); video.hidden = true; }
+                main.hidden = false;
+                if (main.getAttribute('src') === t.dataset.src) return;
+                main.classList.add('fade');
+                setTimeout(() => { main.src = t.dataset.src; main.onload = () => main.classList.remove('fade'); }, 180);
+            };
+            t.addEventListener('click', show);
+            if (!t.dataset.video) t.addEventListener('mouseenter', show);   // the video starts on click only
+        });
+    });
+    const box = document.querySelector('.lightbox');
+    if (!box) return;
+    const big = box.querySelector('img');
+    document.querySelectorAll('.piece-frame img.main').forEach(img =>
+        img.addEventListener('click', () => { big.src = img.src; big.alt = img.alt; box.hidden = false; }));
+})();
+
+/* Collect page, frame option: ticking "add a frame" shows the note and adds it to the email. */
+(function () {
+    document.querySelectorAll('.piece').forEach(piece => {
+        const ask = piece.querySelector('.ask');
+        const box = piece.querySelector('.frame-opt input');
+        const note = piece.querySelector('.frame-note');
+        if (!ask || !box) return;
+        const base = ask.getAttribute('href');
+        const update = () => {
+            if (note) note.hidden = !box.checked;
+            ask.setAttribute('href', base + encodeURIComponent(box.checked ? 'Option: with frame\n' : ''));
+        };
+        box.addEventListener('change', update);
+        update();
+    });
+})();
