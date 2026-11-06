@@ -245,6 +245,7 @@ section { padding: 14vh var(--pad) 0; }
 .piece-info { position: sticky; top: 90px; }
 .piece-top { display: flex; justify-content: space-between; color: var(--dim); }
 .piece-top .status::before { content: "● "; }
+.piece-top .new { color: var(--pink); }
 .piece[data-status="available"] .status { color: var(--gold); }
 .piece[data-status="available"] .status::after { content: "available"; }
 .piece[data-status="reserved"] .status { color: var(--copper); }
